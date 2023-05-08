@@ -4,6 +4,11 @@ var timeNow = new Date().toLocaleString();
 var sitesEl = document.querySelector("#currentDay");
 sitesEl.textContent = timeNow;
 
+var clearButton = document.createElement("button");
+clearButton.textContent = "Clear Schedule";
+clearButton.classList.add("clear-button");
+document.body.appendChild(clearButton);
+
 // Set start and end times of workday
 var dayStart = 8;
 var dayEnd = 18;
@@ -72,7 +77,7 @@ let hours = [];
 
 function init() {
   var storedHours = JSON.parse(localStorage.getItem("hours"));
-
+  console.log("storedhoursare" + storedHours);
   if (storedHours !== null) {
     hours = storedHours;
   } else {
@@ -132,22 +137,13 @@ function saveFunction() {
   renderTodos(todoRef);
 };
 
-
-// init()
-var clearButton = document.createElement("button");
-clearButton.textContent = "Clear Hours";
 clearButton.addEventListener("click", function() {
-  clearHours();
-});
-document.body.appendChild(clearButton);
-
-function clearHours() {
   blankHours();
   localStorage.setItem("hours", JSON.stringify(hours));
   init();
-  console.log(hours)
-}
+});
 
+init()
 
 })
 
