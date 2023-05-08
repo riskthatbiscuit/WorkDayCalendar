@@ -2,9 +2,9 @@
 // the code isn't run until the browser has finished rendering all the elements
 
 // Find & display time
-var timeNow = Date();
+var timeNow = new Date().toLocaleString();
 var sitesEl = document.querySelector("#currentDay");
-sitesEl.textContent = Date();
+sitesEl.textContent = timeNow;
 // Need to find a nicer way to display this date
 
 // Set start and end times of workday
@@ -22,16 +22,19 @@ for (let i= dayStart; i<dayEnd; i++) {
 
   var divKey = document.createElement("div");
   var divKey2 = document.createElement("div");
-  var textArea = document.createElement("textarea" + i);
+  var textArea = document.createElement("textarea");
   var buttonKey = document.createElement("button");
   var iKey = document.createElement("i");
+
+  // Add unique id to the textarea
+  textArea.id = "textarea-" + i;
 
   divKey2.setAttribute("class", "col-2 col-md-1 hour text-center py-3");
   textArea.setAttribute("class", "col-8 col-md-10 description");
   textArea.setAttribute("rows", "3");
   buttonKey.setAttribute("class", "btn saveBtn col-2 col-md-1");
   buttonKey.setAttribute("aria-label", "save");
-  buttonKey.setAttribute("index", i)
+  buttonKey.setAttribute("data-index", i)
   iKey.setAttribute("class","fas fa-save");
   iKey.setAttribute("aria-hidden", "true");
 
@@ -62,7 +65,7 @@ for (let i= dayStart; i<dayEnd; i++) {
 }
 
 
-const hours = [];
+let hours = [];
 
 function init() {
   var storedHours = JSON.parse(localStorage.getItem("hours"));
@@ -98,11 +101,10 @@ function storeHours() {
   
 function saveFunction() {
 
-  event.preventDefault();
-  refClick = this;
-  console.log(refClick);
-  console.log(refClick.index);
-  var todoText = todoInput.value.trim();
+  var refClick = this;
+  var todoRef = refClick.getAttribute("data-index");
+  var todoText = document.querySelector("#textarea-" + todoRef).value;
+  console.log(todoText)
 
   // Return from function early if submitted todoText is blank
   if (todoText === "") {
