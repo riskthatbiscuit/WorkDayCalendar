@@ -1,18 +1,24 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-
+$(function() {
 // Find & display time
 var timeNow = new Date().toLocaleString();
 var sitesEl = document.querySelector("#currentDay");
 sitesEl.textContent = timeNow;
-// Need to find a nicer way to display this date
 
 // Set start and end times of workday
 var dayStart = 8;
 var dayEnd = 18;
+
 // To be defined further and read directly from Date
-var hourNow = 14;
+var hourNow = new Date().getHours();
+
 // How do we get this to update automatically when the time crosses an hour mark?
+setInterval(function () {
+  var newHour = new Date().getHours();
+  if (newHour !== hourNow) {
+    hourNow = newHour;
+    init();
+  }
+}, 60000); // check every minute
 
 var siteEl2 = document.querySelector(".container-lg")
 
@@ -64,7 +70,6 @@ for (let i= dayStart; i<dayEnd; i++) {
 
 }
 
-
 let hours = [];
 
 function init() {
@@ -72,28 +77,33 @@ function init() {
 
   if (storedHours !== null) {
     hours = storedHours;
+  } else {
+    // initialize hours with empty arrays for all hours
+    for (let i = dayStart; i < dayEnd; i++) {
+      hours.push([]);
+    }
   }
-  
-  for (let i= 0; i<dayEnd-dayStart; i++) {
-    // renderTodos(i);
+
+  for (let i = 0; i < dayEnd - dayStart; i++) {
+    renderTodos(i);
   }
 }
 
-// function renderTodos(hourRef) {
-//   todoList.innerHTML = "";
-//   todoCountSpan.textContent = hours[hourRef].length;
+function renderTodos(hourRef) {
+  // hours.innerHTML = "";
+  // todoCountSpan.textContent = hours[hourRef].length;
 
-//   for (var k = 0; k < hours[hourRef].length; k++){
-//     var todo = hours[houRef][k];
+  for (var k = 0; k < hours[hourRef].length; k++){
+    var todo = hours[hourRef][k];
 
-//     var li = document.createElement("li");
-//     li.textContent = todo;
-//     li.setAttribute("data-index", i);
+    var li = document.createElement("li");
+    li.textContent = todo;
+    li.setAttribute("data-index", k);
 
-//     todoList.appendChild(i);
-//   }
+    todoList.appendChild(li);
+  }
 
-// }
+}
 
 function storeHours() {
   localStorage.setItem("hours", JSON.stringify(hours));
@@ -104,20 +114,24 @@ function saveFunction() {
   var refClick = this;
   var todoRef = refClick.getAttribute("data-index");
   var todoText = document.querySelector("#textarea-" + todoRef).value;
-  console.log(todoText)
-
+  console.log(todoText);
+  hours[0]="asdf";
+  console.log(hours);
+  console.log(hours[0]);
   // Return from function early if submitted todoText is blank
   if (todoText === "") {
     return;
   }
-
-  // Add new todoText to todos array, clear the input
-  todos.push(todoText);
-  todoInput.value = "";
-
+  console.log(hours[todoRef]);
+  // Add new todoText to particular hour array, clear the input
+  hours[todoRef].push(todoText);
+  todoText.value = "";
+  console.log(hours)
   // Store updated todos in localStorage, re-render the list
-  storeTodos();
-  renderTodos();
+  storeHours();
+  renderTodos(todoRef);
 };
 
 init()
+
+})
