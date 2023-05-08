@@ -1,23 +1,121 @@
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
-// in the html.
-$(function () {
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
-  //
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  //
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-  //
-  // TODO: Add code to display the current date in the header of the page.
-});
+
+// Find & display time
+var timeNow = Date();
+var sitesEl = document.querySelector("#currentDay");
+sitesEl.textContent = Date();
+// Need to find a nicer way to display this date
+
+// Set start and end times of workday
+var dayStart = 8;
+var dayEnd = 18;
+// To be defined further and read directly from Date
+var hourNow = 14;
+// How do we get this to update automatically when the time crosses an hour mark?
+
+var siteEl2 = document.querySelector(".container-lg")
+
+
+// Generate the days
+for (let i= dayStart; i<dayEnd; i++) {
+
+  var divKey = document.createElement("div");
+  var divKey2 = document.createElement("div");
+  var textArea = document.createElement("textarea" + i);
+  var buttonKey = document.createElement("button");
+  var iKey = document.createElement("i");
+
+  divKey2.setAttribute("class", "col-2 col-md-1 hour text-center py-3");
+  textArea.setAttribute("class", "col-8 col-md-10 description");
+  textArea.setAttribute("rows", "3");
+  buttonKey.setAttribute("class", "btn saveBtn col-2 col-md-1");
+  buttonKey.setAttribute("aria-label", "save");
+  buttonKey.setAttribute("index", i)
+  iKey.setAttribute("class","fas fa-save");
+  iKey.setAttribute("aria-hidden", "true");
+
+  if (i == 12) {
+    divKey2.textContent = "12PM"
+  } else if (i > 12) {
+    divKey2.textContent = (i-12) + "PM";
+  } else {
+    divKey2.textContent = i + "AM"
+  }
+
+  if (i == hourNow) {
+    divKey.setAttribute("class", "row time-block present");
+  } else if (i > hourNow) {
+    divKey.setAttribute("class", "row time-block future");
+  } else {
+    divKey.setAttribute("class", "row time-block past");
+  }
+  
+  buttonKey.addEventListener("click", saveFunction)
+  
+  siteEl2.appendChild(divKey);
+  divKey.appendChild(divKey2);
+  divKey.appendChild(textArea);
+  divKey.appendChild(buttonKey);
+  buttonKey.appendChild(iKey);
+
+}
+
+
+const hours = [];
+
+function init() {
+  var storedHours = JSON.parse(localStorage.getItem("hours"));
+
+  if (storedHours !== null) {
+    hours = storedHours;
+  }
+  
+  for (let i= 0; i<dayEnd-dayStart; i++) {
+    // renderTodos(i);
+  }
+}
+
+// function renderTodos(hourRef) {
+//   todoList.innerHTML = "";
+//   todoCountSpan.textContent = hours[hourRef].length;
+
+//   for (var k = 0; k < hours[hourRef].length; k++){
+//     var todo = hours[houRef][k];
+
+//     var li = document.createElement("li");
+//     li.textContent = todo;
+//     li.setAttribute("data-index", i);
+
+//     todoList.appendChild(i);
+//   }
+
+// }
+
+function storeHours() {
+  localStorage.setItem("hours", JSON.stringify(hours));
+}
+  
+function saveFunction() {
+
+  event.preventDefault();
+  refClick = this;
+  console.log(refClick);
+  console.log(refClick.index);
+  var todoText = todoInput.value.trim();
+
+  // Return from function early if submitted todoText is blank
+  if (todoText === "") {
+    return;
+  }
+
+  // Add new todoText to todos array, clear the input
+  todos.push(todoText);
+  todoInput.value = "";
+
+  // Store updated todos in localStorage, re-render the list
+  storeTodos();
+  renderTodos();
+};
+
+init()
