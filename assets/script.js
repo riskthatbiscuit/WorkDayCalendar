@@ -20,11 +20,10 @@ setInterval(function () {
   }
 }, 60000); // check every minute
 
-var siteEl2 = document.querySelector(".container-lg")
-
+var siteEl2 = document.querySelector(".container-lg");
 
 // Generate the days
-for (let i= dayStart; i<dayEnd; i++) {
+for (let i= 0; i<dayEnd-dayStart; i++) {
 
   var divKey = document.createElement("div");
   var divKey2 = document.createElement("div");
@@ -44,30 +43,29 @@ for (let i= dayStart; i<dayEnd; i++) {
   iKey.setAttribute("class","fas fa-save");
   iKey.setAttribute("aria-hidden", "true");
 
-  if (i == 12) {
-    divKey2.textContent = "12PM"
-  } else if (i > 12) {
-    divKey2.textContent = (i-12) + "PM";
+  if (i + dayStart == 12) {
+    divKey2.textContent = "12PM";
+  } else if (i + dayStart > 12) {
+    divKey2.textContent = (i + dayStart - 12)+ "PM";
   } else {
-    divKey2.textContent = i + "AM"
+    divKey2.textContent = (i + dayStart) + "AM";
   }
 
-  if (i == hourNow) {
+  if (i + dayStart == hourNow) {
     divKey.setAttribute("class", "row time-block present");
-  } else if (i > hourNow) {
+  } else if (i + dayStart> hourNow) {
     divKey.setAttribute("class", "row time-block future");
   } else {
     divKey.setAttribute("class", "row time-block past");
   }
   
-  buttonKey.addEventListener("click", saveFunction)
+  buttonKey.addEventListener("click", saveFunction);
   
   siteEl2.appendChild(divKey);
   divKey.appendChild(divKey2);
   divKey.appendChild(textArea);
   divKey.appendChild(buttonKey);
   buttonKey.appendChild(iKey);
-
 }
 
 let hours = [];
@@ -78,10 +76,7 @@ function init() {
   if (storedHours !== null) {
     hours = storedHours;
   } else {
-    // initialize hours with empty arrays for all hours
-    for (let i = dayStart; i < dayEnd; i++) {
-      hours.push([]);
-    }
+    blankHours();
   }
 
   for (let i = 0; i < dayEnd - dayStart; i++) {
@@ -89,21 +84,25 @@ function init() {
   }
 }
 
-function renderTodos(hourRef) {
-  // hours.innerHTML = "";
-  // todoCountSpan.textContent = hours[hourRef].length;
-
-  for (var k = 0; k < hours[hourRef].length; k++){
-    var todo = hours[hourRef][k];
-
-    var li = document.createElement("li");
-    li.textContent = todo;
-    li.setAttribute("data-index", k);
-
-    todoList.appendChild(li);
+function blankHours() {
+    hours = [];
+    for (let i = dayStart; i < dayEnd; i++) {
+      hours.push([]);
+    }
   }
 
+function renderTodos(todoRef) {
+  var todoList = document.querySelector("#textarea-" + todoRef);
+  var todoString = '';
+
+  for (var k = 0; k < hours[todoRef].length; k++) {
+    var todo = hours[todoRef][k];
+    todoString += todo + '\n';
+  }
+
+  todoList.value = todoString;
 }
+
 
 function storeHours() {
   localStorage.setItem("hours", JSON.stringify(hours));
@@ -114,24 +113,41 @@ function saveFunction() {
   var refClick = this;
   var todoRef = refClick.getAttribute("data-index");
   var todoText = document.querySelector("#textarea-" + todoRef).value;
-  console.log(todoText);
-  hours[0]="asdf";
-  console.log(hours);
-  console.log(hours[0]);
-  // Return from function early if submitted todoText is blank
+
   if (todoText === "") {
     return;
   }
-  console.log(hours[todoRef]);
-  // Add new todoText to particular hour array, clear the input
+
+  // if (!Array.isArray(hours[todoRef])) {
+  hours[todoRef] = [];
+  // }  
+
   hours[todoRef].push(todoText);
+  // Add new todoText to particular hour array, clear the input
   todoText.value = "";
+  
   console.log(hours)
   // Store updated todos in localStorage, re-render the list
   storeHours();
   renderTodos(todoRef);
 };
 
-init()
+
+// init()
+var clearButton = document.createElement("button");
+clearButton.textContent = "Clear Hours";
+clearButton.addEventListener("click", function() {
+  clearHours();
+});
+document.body.appendChild(clearButton);
+
+function clearHours() {
+  blankHours();
+  localStorage.setItem("hours", JSON.stringify(hours));
+  init();
+  console.log(hours)
+}
+
 
 })
+
