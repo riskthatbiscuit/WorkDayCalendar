@@ -61,7 +61,7 @@ textarea {
 
 .clear-button {
   display: block;
-  margin: 0 auto;
+  margin: 5px auto;
   padding: 10px 20px;
   border: none;
   background-color: #3498db;

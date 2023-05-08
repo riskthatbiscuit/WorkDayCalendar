@@ -1,19 +1,17 @@
 $(function() {
+var clearButton = document.createElement("button");
+clearButton.textContent = "Clear Schedule";
+clearButton.classList.add("clear-button");
+document.body.appendChild(clearButton);
+  
 // Find & display time
 var timeNow = new Date().toLocaleString();
 var sitesEl = document.querySelector("#currentDay");
 sitesEl.textContent = timeNow;
 
-var clearButton = document.createElement("button");
-clearButton.textContent = "Clear Schedule";
-clearButton.classList.add("clear-button");
-document.body.appendChild(clearButton);
-
 // Set start and end times of workday
 var dayStart = 8;
 var dayEnd = 18;
-
-// To be defined further and read directly from Date
 var hourNow = new Date().getHours();
 
 // How do we get this to update automatically when the time crosses an hour mark?
