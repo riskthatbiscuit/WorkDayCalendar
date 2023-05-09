@@ -109,35 +109,33 @@ $(function() {
 
   // Rendering the existing stored values to the page
   function renderTodos(todoRef) {
-    const todoList = document.querySelector(`#textarea-${todoRef}`);
+    const todoList = document.querySelector("#textarea-" + todoRef);
     const todoString = hours[todoRef].join('\n');
     todoList.value = todoString;
   }
 
-
+  // Function to store information to local storage
   function storeHours() {
     localStorage.setItem("hours", JSON.stringify(hours));
   }
-    
+  
+  // Save function is run when save button clicked on hour, updating hours[] with contained text
   function saveFunction() {
-
-    var refClick = this;
-    var todoRef = refClick.getAttribute("data-index");
+    var todoRef = this.getAttribute("data-index");
     var todoText = document.querySelector("#textarea-" + todoRef).value;
 
     if (todoText === "") {
       return;
     }
 
-    hours[todoRef] = [];
-    hours[todoRef].push(todoText);
-    todoText.value = "";
-    
+    hours[todoRef] = [todoText];
+
     // Store updated todos in localStorage, re-render the list
     storeHours();
     renderTodos(todoRef);
   };
 
+  // Add event listener for Clear Schedule button
   clearButton.addEventListener("click", function() {
     blankHours();
     localStorage.setItem("hours", JSON.stringify(hours));
