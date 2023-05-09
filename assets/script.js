@@ -109,14 +109,8 @@ $(function() {
 
   // Rendering the existing stored values to the page
   function renderTodos(todoRef) {
-    var todoList = document.querySelector("#textarea-" + todoRef);
-    var todoString = '';
-
-    for (var k = 0; k < hours[todoRef].length; k++) {
-      var todo = hours[todoRef][k];
-      todoString += todo + '\n';
-    }
-
+    const todoList = document.querySelector(`#textarea-${todoRef}`);
+    const todoString = hours[todoRef].join('\n');
     todoList.value = todoString;
   }
 
