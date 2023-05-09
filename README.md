@@ -22,7 +22,7 @@ This page is built using:
 
 ## 🚀 Getting Started
 
-To get started with WorkDayCalendar, simply open the index.html file in your browser. The page will load and display the current date and time at the top of the page, and the daily schedule with hour blocks and save buttons.
+To get started with WorkDayCalendar, simply open the index.html file in your browser or [click here](https://riskthatbiscuit.github.io/WorkDayCalendar/). The page will load and display the current date and time at the top of the page, and the daily schedule with hour blocks and save buttons.
 
 
 ## 📝 License
